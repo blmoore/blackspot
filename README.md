@@ -7,6 +7,10 @@ View my current instance at [blmr.shinyapps.io/blackspot](https://blmr.shinyapps
 shiny::runGitHub("blmoore/blackspot")
 ```
 
+## Screenshot
+
+![screenshot of shiny app](http://blm.io/blackspot_screen.png)
+
 ## Credits
 
 * Code: some shiny code (especially UI) adapted from [SuperZip](https://github.com/jcheng5/superzip).
