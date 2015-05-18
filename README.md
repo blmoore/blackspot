@@ -1,5 +1,5 @@
 # blackspot
-Shiny app exploring Edinburgh traffic collision data. 
+Shiny app exploring Edinburgh traffic collision data (some functionality still to implement).
 
 View my current instance at [blmr.shinyapps.io/blackspot](https://blmr.shinyapps.io/blackspot/) or grab this repository and run locally with: 
 
