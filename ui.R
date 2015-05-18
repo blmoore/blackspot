@@ -9,7 +9,8 @@ shinyUI(navbarPage("Blackspot", id="nav",
     div(class="outer",
       
       tags$head(
-          includeCSS("styles.css")
+          includeCSS("styles.css"),
+          tags$link(rel="shortcut icon", href="favicon.ico")
       ),
       
       leafletOutput("mymap", width="100%", height="100%"),
@@ -38,7 +39,7 @@ shinyUI(navbarPage("Blackspot", id="nav",
           start = as.Date("2010-01-01"), end = as.Date("2013-07-01")),
         
         selectInput("color", "Color by:", 
-          choices=c("None", "Severity", "Casualties", "Time", "Vehicles")),
+          choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit")),
         
         sliderInput("alpha", "Opacity:",
           min=0, max=1, value=.3),

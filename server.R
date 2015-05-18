@@ -9,7 +9,7 @@ library("stringr")
 library("zoo")
 
 accidents <- readRDS("data/accidents.rds")
-accidents <- accidents[sample(1:nrow(accidents), 1000),]
+accidents <- accidents[sample(1:nrow(accidents), 2000),]
 
 accident_desc <- function(row)
   with(as.list(row), paste0(strong(
@@ -29,6 +29,7 @@ colnames(d2) <- c("ym", "n")
 
 # colour paletters
 pal <- brewer.pal(9, "Set1")
+cont_pal <- colorRampPalette(brewer.pal(9, "RdBu"))(24)
 
 # clean table for dt
 clean <- accidents[,c(3:5,6:7, 17, 22, 23, 24, 25, 35)]
@@ -41,7 +42,13 @@ colnames(clean) <- c("Severity", "No. vehicles",
 shinyServer(function(input, output) {
 
   output$mymap <- renderLeaflet({
-    fillv <- if(input$color == "None") "black" else pal[as.factor(accidents$severity)]
+    
+    fillv <- if(input$color == "None") "black" else 
+      if(input$color == "Severity") pal[as.factor(accidents$severity)] else
+        if(input$color == "Casualties") pal[as.factor(accidents$no_casualt)] else
+          if(input$color == "Time") cont_pal[accidents$a_time_hr] else
+            if(input$color == "Vehicles") pal[as.factor(accidents$no_vehicle)] else
+              pal[as.factor(accidents$speed_limi)]
     
     leaflet(data=accidents) %>% 
       addTiles(urlTemplate="http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}") %>%
