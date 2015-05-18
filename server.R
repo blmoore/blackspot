@@ -22,7 +22,6 @@ strs <- apply(accidents, 1, accident_desc)
 strs <- str_wrap(strs, width=10) 
 
 # summary plot munging
-accidents$ym <- as.factor(zoo::as.yearmon(accidents$a_date))
 d2 <- accidents %>% group_by(as.factor(ym)) %>%
   summarise(n=n())
 colnames(d2) <- c("ym", "n")
@@ -39,10 +38,9 @@ colnames(clean) <- c("Severity", "No. vehicles",
   "Light conditions", "Weather conditions", 
   "Road conditions", "Special conditions", "Postcode")
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
 
   output$mymap <- renderLeaflet({
-    
     fillv <- if(input$color == "None") "black" else 
       if(input$color == "Severity") pal[as.factor(accidents$severity)] else
         if(input$color == "Casualties") pal[as.factor(accidents$no_casualt)] else
@@ -50,13 +48,17 @@ shinyServer(function(input, output) {
             if(input$color == "Vehicles") pal[as.factor(accidents$no_vehicle)] else
               pal[as.factor(accidents$speed_limi)]
     
-    leaflet(data=accidents) %>% 
-      addTiles(urlTemplate="http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}") %>%
-      addTiles('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', 
-               attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>%
-      setView(lng=-3.19, lat=55.95, zoom=13) %>%
-      addCircleMarkers(~long, ~lat, radius=~(no_vehicle+.8)**1.5, fillOpacity=input$alpha,
-                       color=NA, popup=strs, weight=2, fillColor = fillv)
+      l <- leaflet(data=accidents) %>% 
+        addTiles(urlTemplate="http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}") %>%
+        addTiles('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', 
+          attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>%
+        setView(lng=-3.19, lat=55.95, zoom=13) %>%
+        addCircleMarkers(~long, ~lat, radius=~(no_vehicle+.8)**1.5, fillOpacity=input$alpha,
+          color=NA, popup=strs, weight=2, fillColor = fillv)
+      
+      session$sendCustomMessage(type = "map_done", "done")
+      
+      l
   })
   
   output$monthTotals <- renderPlot({

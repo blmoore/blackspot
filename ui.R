@@ -10,10 +10,13 @@ shinyUI(navbarPage("Blackspot", id="nav",
       
       tags$head(
           includeCSS("styles.css"),
-          tags$link(rel="shortcut icon", href="favicon.ico")
+          includeScript("spin.min.js")
       ),
       
       leafletOutput("mymap", width="100%", height="100%"),
+      tags$script("
+var spinner = new Spinner().spin();
+$( 'div#mymap' ).append(spinner.el);"),
       
       # Shiny versions prior to 0.11 should use class="modal" instead.
       absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
@@ -30,9 +33,6 @@ shinyUI(navbarPage("Blackspot", id="nav",
         hr(),
         
         h4("Controls"),
-        
-        #selectInput("color", "Color", vars),
-        #selectInput("size", "Size", vars, selected = "adultpop"),
         
         dateRangeInput('dates',
           label = 'Occurred between:',
@@ -55,7 +55,14 @@ shinyUI(navbarPage("Blackspot", id="nav",
         a("github", href="http://github.com/blmoore/blackspot"),
           "(original Shiny code adapted from",
         a("Superzip", href="https://github.com/jcheng5/superzip"), 
-          "by Joe Cheng).")
+          "by Joe Cheng)."),
+      
+      tags$script('
+  Shiny.addCustomMessageHandler("map_done",
+        function(s) {
+          spinner.stop();
+          $( "div#mymap" ).remove(spinner);
+        });')
         
       ),
       
