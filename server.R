@@ -55,7 +55,7 @@ shinyServer(function(input, output) {
   output$monthTotals <- renderPlot({
     ggplot(d2, aes(x=zoo::as.Date(zoo::as.yearmon(ym)), y=n)) + 
       geom_area() + theme_minimal() + 
-      labs(x="", y="Recorded collisions") +
+      labs(x="", y="Recorded collisions\nper month") +
       scale_y_continuous(expand=c(0,0))
   })
 

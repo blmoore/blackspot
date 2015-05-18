@@ -1,3 +1,5 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,300,400italic,400,700);
+
 input[type="number"] {
   max-width: 80%;
 }
@@ -13,9 +15,9 @@ div.outer {
 }
 
 /* Customize fonts */
-body, label, input, button, select { 
-  font-family: 'Helvetica Neue', Helvetica;
-  font-weight: 200;
+body, label, input, button, select {
+  font-family: 'Open Sans', sans-serif;a;
+  font-weight: 300;
 }
 h1, h2, h3, h4 { font-weight: 400; }
 
@@ -41,6 +43,8 @@ h1, h2, h3, h4 { font-weight: 400; }
   bottom: 10px;
   left: 10px;
   font-size: 12px;
+  background-color: #efefef;
+  padding: 2px;
 }
 
 /* If not using map tiles, show a white background */
@@ -53,5 +57,14 @@ h1, h2, h3, h4 { font-weight: 400; }
 }
 
 div.leaflet-control-zoom {
-    margin-top: 65px !important;
+    margin-top: 25px !important;
+}
+
+
+.shiny-input-container {
+  margin: 0 auto;
+}
+
+.shiny-plot-output {
+  margin: 0 auto;
 }
