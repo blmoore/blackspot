@@ -5,21 +5,20 @@ library("htmltools")
 library("leaflet")
 library("RColorBrewer")
 library("shiny")
-library("stringr")
 library("zoo")
 
 accidents <- readRDS("data/accidents.rds")
 accidents <- accidents[sample(1:nrow(accidents), 2000),]
 
 accident_desc <- function(row)
-  with(as.list(row), paste0(strong(
-    format.Date(a_date, "%a %d %B %Y"), ": "), "A ", 
+  with(as.list(row), paste0("<b>",
+    format.Date(a_date, "%a %d %B %Y"), ":</b> A ", 
     tolower(severity), " collision in a ", speed_limi, 
     " MPH zone, involving ", no_vehicle, " vechicle(s) with ",
     no_casualt, " casualtie(s). Weather was ", tolower(weather)))
 
 strs <- apply(accidents, 1, accident_desc)
-strs <- str_wrap(strs, width=10) 
+names(strs) <- NULL
 
 # summary plot munging
 d2 <- accidents %>% group_by(as.factor(ym)) %>%
@@ -40,6 +39,21 @@ colnames(clean) <- c("Severity", "No. vehicles",
 
 shinyServer(function(input, output, session) {
 
+  legend <- reactive({
+    proxy <- leafletProxy("mymap", session, data=accidents)
+    if(input$color == "Speed limit"){
+      message("triggered")
+      pal <- colorFactor(palette="Set1", domain=factor(accidents$speed_limi))
+      l <- proxy %>% 
+        addLegend("bottomleft", pal=pal, values=~speed_limi, 
+          labFormat=labelFormat(suffix=" mph"), title="Speed limit")
+      return(l)
+    } else {
+      return(proxy)
+    }
+  })
+  
+  
   output$mymap <- renderLeaflet({
     fillv <- if(input$color == "None") "black" else 
       if(input$color == "Severity") pal[as.factor(accidents$severity)] else
@@ -56,11 +70,13 @@ shinyServer(function(input, output, session) {
         addCircleMarkers(~long, ~lat, radius=~(no_vehicle+.8)**1.5, fillOpacity=input$alpha,
           color=NA, popup=strs, weight=2, fillColor = fillv)
       
+    
       session$sendCustomMessage(type = "map_done", "done")
       
       l
   })
   
+    
   output$monthTotals <- renderPlot({
     ggplot(d2, aes(x=zoo::as.Date(zoo::as.yearmon(ym)), y=n)) + 
       geom_area() + theme_minimal() + 
