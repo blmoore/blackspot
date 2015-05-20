@@ -9,6 +9,7 @@ shinyUI(navbarPage("Blackspot", id="nav",
     div(class="outer",
       
       tags$head(
+          includeScript("analytics.js"),
           includeCSS("styles.css"),
           includeScript("spin.min.js")
       ),
