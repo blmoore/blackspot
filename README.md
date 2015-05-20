@@ -7,7 +7,7 @@ View at [blackspot.org.uk](http://blackspot.org.uk) or grab this repository and 
 shiny::runGitHub("blmoore/blackspot")
 ```
 
-(Note `analytics.js` contains my Google analytics tracking code, you'll want to comment this out (i.e. `includeScript("analytics.js")` in `ui.R`) or swap in your own code if you're deploying this app!)
+Note `analytics.js` contains my Google analytics tracking code, you'll want to comment this out (i.e. `includeScript("analytics.js")` in `ui.R`) or swap in your own code if you're deploying this app!
 
 ## Screenshot
 
