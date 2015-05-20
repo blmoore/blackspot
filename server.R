@@ -5,7 +5,6 @@ library("htmltools")
 library("leaflet")
 library("RColorBrewer")
 library("shiny")
-library("stringr")
 library("zoo")
 
 accidents <- readRDS("data/accidents.rds")
@@ -19,7 +18,7 @@ accident_desc <- function(row)
     no_casualt, " casualtie(s). Weather was ", tolower(weather)))
 
 strs <- apply(accidents, 1, accident_desc)
-strs <- str_wrap(strs, width=10) 
+names(strs) <- NULL
 
 # summary plot munging
 d2 <- accidents %>% group_by(as.factor(ym)) %>%
