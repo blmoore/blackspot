@@ -40,6 +40,8 @@ colnames(clean) <- c("Severity", "No. vehicles",
 shinyServer(function(input, output, session) {
 
   output$mymap <- renderLeaflet({
+    accidents <- subset(accidents, a_date >= input$dates[[1]] & a_date <= input$dates[[2]])
+    
     fillv <- if(input$color == "None") "black" else 
       if(input$color == "Severity") pal[as.factor(accidents$severity)] else
         if(input$color == "Casualties") pal[as.factor(accidents$no_casualt)] else
@@ -47,7 +49,7 @@ shinyServer(function(input, output, session) {
             if(input$color == "Vehicles") pal[as.factor(accidents$no_vehicle)] else
               pal[as.factor(accidents$speed_limi)]
     
-      l <- leaflet(data=subset(accidents, a_date >= input$dates[[1]] & a_date <= input$dates[[2]])) %>% 
+      l <- leaflet(data=accidents) %>% 
         addTiles(urlTemplate="http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}") %>%
         addTiles('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', 
           attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>%
