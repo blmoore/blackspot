@@ -39,11 +39,11 @@ $( 'div#mymap' ).append(spinner.el);"),
           label = 'Occurred between:',
           start = as.Date("2010-01-01"), end = as.Date("2013-07-01")),
         
-        selectInput("color", "Color by:", 
+        selectInput("color", "Colour by:", 
           choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit")),
         
         sliderInput("alpha", "Opacity:",
-          min=0, max=1, value=.3),
+          min=0, max=1, value=.4, step=.025, ticks=T),
         
         hr(),
         h4("Summary plots"),
@@ -65,10 +65,10 @@ $( 'div#mymap' ).append(spinner.el);"),
           $( "div#mymap" ).remove(spinner);
         });')
         
-      ),
+      )#,
       
-      tags$div(id="cite",
-        a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"))
+     # tags$div(id="cite",
+      #  a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"))
     )
   ), tabPanel("Table", DT::dataTableOutput("table"))
 )
