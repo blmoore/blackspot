@@ -27,10 +27,6 @@ d2 <- accidents %>% group_by(as.factor(ym)) %>%
   summarise(n=n())
 colnames(d2) <- c("ym", "n")
 
-# colour paletters
-pal <- brewer.pal(9, "Set1")
-cont_pal <- colorRampPalette(brewer.pal(9, "RdBu"))(24)
-
 # clean table for dt
 clean <- accidents[,c(3:5,6:7, 17, 22, 23, 24, 25, 35)]
 rownames(clean) <- NULL
@@ -96,7 +92,8 @@ shinyServer(function(input, output, session) {
     col_fn <- function(col){
       if(col$type != "none"){
         if(col$type == "int") {
-          return(colorNumeric("Set1", domain=ax[[col$var]]))
+          #return(colorNumeric("RdGy", domain=ax[[col$var]]))
+          return(colorNumeric(c(brewer.pal(9, "RdGy")[-1], "black"), domain=ax[[col$var]]))
         } else {
           return(colorFactor("Set1", domain=ax[[col$var]]))
         }} else return( function(...) "black" )
@@ -104,7 +101,7 @@ shinyServer(function(input, output, session) {
     
     if(col$var == "none"){
       l <- leafletProxy("mymap", session, data=ax) %>%
-        addCircleMarkers(~long, ~lat, radius=~1+(no_vehicle**1.5), fillOpacity=getAlpha(),
+        addCircleMarkers(~long, ~lat, radius=~no_vehicle+1*2, fillOpacity=getAlpha(),
           color=NA, popup=~text, fillColor = "black",
           layerId=paste0("p", 1:nrow(ax))) %>%
         removeControl(layerId="legend")
