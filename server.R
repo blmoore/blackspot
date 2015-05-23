@@ -3,12 +3,11 @@ library("DT")
 library("ggplot2")
 library("htmltools")
 library("leaflet")
-library("RColorBrewer")
 library("shiny")
 library("zoo")
 
 accidents <- readRDS("data/accidents.rds")
-accidents <- accidents[sample(1:nrow(accidents), 2000),]
+#accidents <- accidents[sample(1:nrow(accidents), 3000),]
 
 accident_desc <- function(row)
   with(as.list(row), paste0("<b>",
@@ -89,11 +88,14 @@ shinyServer(function(input, output, session) {
       "Speed limit" = list(var="speed_limi", type="int"),
       list(var="none", type="none"))
         
+    pal <- c("#A52278", "#993086", "#8C3C97", 
+      "#6D328A", "#4E2B81", "#3B264B", "#180B11", "#000000")
+    
     col_fn <- function(col){
       if(col$type != "none"){
         if(col$type == "int") {
           #return(colorNumeric("RdGy", domain=ax[[col$var]]))
-          return(colorNumeric(c(brewer.pal(9, "RdGy")[-1], "black"), domain=ax[[col$var]]))
+          return(colorNumeric(pal, domain=ax[[col$var]]))
         } else {
           return(colorFactor("Set1", domain=ax[[col$var]]))
         }} else return( function(...) "black" )
