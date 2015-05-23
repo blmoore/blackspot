@@ -43,6 +43,11 @@ shinyServer(function(input, output, session) {
     subset(accidents, a_date >= input$dates[[1]] & a_date <= input$dates[[2]])
   })
   
+  getAlpha <- reactive({
+    message("alpha changed : ", input$alpha)
+    input$alpha
+  })
+  
   legend <- reactive({
     proxy <- leafletProxy("mymap", session, data=accidents)
     if(input$color == "Speed limit"){
@@ -60,20 +65,20 @@ shinyServer(function(input, output, session) {
   output$mymap <- renderLeaflet({
     ax <- getData()
     
-    fillv <- if(input$color == "None") "black" else 
-      if(input$color == "Severity") pal[as.factor(ax$severity)] else
-        if(input$color == "Casualties") pal[as.factor(ax$no_casualt)] else
-          if(input$color == "Time") cont_pal[ax$a_time_hr] else
-            if(input$color == "Vehicles") pal[as.factor(ax$no_vehicle)] else
-              pal[as.factor(ax$speed_limi)]
+#     fillv <- if(input$color == "None") "black" else 
+#       if(input$color == "Severity") pal[as.factor(ax$severity)] else
+#         if(input$color == "Casualties") pal[as.factor(ax$no_casualt)] else
+#           if(input$color == "Time") cont_pal[ax$a_time_hr] else
+#             if(input$color == "Vehicles") pal[as.factor(ax$no_vehicle)] else
+#               pal[as.factor(ax$speed_limi)]
     
       l <- leaflet(data=ax) %>% 
         addTiles(urlTemplate="http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}") %>%
         addTiles('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', 
           attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>%
-        setView(lng=-3.19, lat=55.95, zoom=13) %>%
-        addCircleMarkers(~long, ~lat, radius=~(no_vehicle+.8)**1.5, fillOpacity=input$alpha,
-          color=NA, popup=strs, weight=2, fillColor = fillv)
+        setView(lng=-3.19, lat=55.95, zoom=13) #%>%
+        #addCircleMarkers(~long, ~lat, radius=~(no_vehicle+.8)**1.5, fillOpacity=input$alpha,
+         # color=NA, popup=strs, weight=2, fillColor = fillv)
       
     
       session$sendCustomMessage(type = "map_done", "done")
@@ -81,12 +86,48 @@ shinyServer(function(input, output, session) {
       l
   })
   
+#   observe({
+#     ax <- getData()
+#     alpha <- getAlpha()
+#     leafletProxy("mymap", session, data=ax) %>%
+#       addCircleMarkers(~long, ~lat, radius=~(no_vehicle+.8)**1.5, fillOpacity=alpha,
+#        color=NA, popup=strs, fillColor = "black")
+#   })
     
+  observe({
+    ax <- getData()
+    title <- input$color
+    
+    col <- switch(input$color,
+      "Severity"    = list(var="severity", type="factor"),
+      "Casualties"  = list(var="no_casualt", type="int"),
+      "Time"        = list(var="a_time_hr", type="int"),
+      "Vehicles"    = list(var="no_vehicle", type="int"),
+      "Speed limit" = list(var="speed_limi", type="int"),
+      list(var="speed_limi", type="int"))
+    message(col)
+    
+    col_fn <- function(col){
+      if(col$type != "none"){
+        if(col$type == "int") {
+          return(colorNumeric("Set1", domain=ax[[col$var]]))
+        } else {
+          return(colorFactor("Set1", domain=ax[[col$var]]))
+        }} else return( function() "black" )
+    }
+    
+    leafletProxy("mymap", session, data=ax) %>%
+      clearMarkers() %>%
+      addCircleMarkers(~long, ~lat, radius=~1+(no_vehicle**2), fillOpacity=getAlpha(),
+        color=NA, popup=strs, fillColor = ~col_fn(col)(ax[[col$var]])) %>%
+      addLegend("bottomleft", pal=col_fn(col), values=ax[[col$var]], title=title)
+  })
+  
   output$monthTotals <- renderPlot({
-    ggplot(d2, aes(x=zoo::as.Date(zoo::as.yearmon(ym)), y=n)) + 
+    print(ggplot(d2, aes(x=zoo::as.Date(zoo::as.yearmon(ym)), y=n)) + 
       geom_area() + theme_minimal() + 
       labs(x="", y="Recorded collisions\nper month") +
-      scale_y_continuous(expand=c(0,0))
+      scale_y_continuous(expand=c(0,0)))
   })
 
   output$table <- DT::renderDataTable({

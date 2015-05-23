@@ -43,7 +43,7 @@ $( 'div#mymap' ).append(spinner.el);"),
           choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit")),
         
         sliderInput("alpha", "Opacity:",
-          min=0, max=1, value=.3),
+          min=0, max=1, value=.2, step=.01, ticks=F),
         
         hr(),
         h4("Summary plots"),
