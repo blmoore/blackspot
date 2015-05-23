@@ -68,3 +68,7 @@ div.leaflet-control-zoom {
 .shiny-plot-output {
   margin: 0 auto;
 }
+
+.control-label {
+  margin-top: 4px;
+}
