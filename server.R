@@ -20,6 +20,8 @@ accident_desc <- function(row)
 strs <- apply(accidents, 1, accident_desc)
 names(strs) <- NULL
 
+accidents$text <- strs
+
 # summary plot munging
 d2 <- accidents %>% group_by(as.factor(ym)) %>%
   summarise(n=n())
@@ -38,13 +40,13 @@ colnames(clean) <- c("Severity", "No. vehicles",
   "Road conditions", "Special conditions", "Postcode")
 
 shinyServer(function(input, output, session) {
-
+  
   getData <- reactive({
     subset(accidents, a_date >= input$dates[[1]] & a_date <= input$dates[[2]])
   })
   
   getAlpha <- reactive({
-    message("alpha changed : ", input$alpha)
+    #message("alpha changed : ", input$alpha)
     input$alpha
   })
   
@@ -63,38 +65,23 @@ shinyServer(function(input, output, session) {
   })
   
   output$mymap <- renderLeaflet({
+    # build base map on load
     ax <- getData()
+        
+    l <- leaflet(data=ax) %>% 
+      addTiles(urlTemplate="http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}") %>%
+      addTiles('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', 
+        attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>%
+      setView(lng=-3.19, lat=55.95, zoom=13) #%>%
     
-#     fillv <- if(input$color == "None") "black" else 
-#       if(input$color == "Severity") pal[as.factor(ax$severity)] else
-#         if(input$color == "Casualties") pal[as.factor(ax$no_casualt)] else
-#           if(input$color == "Time") cont_pal[ax$a_time_hr] else
-#             if(input$color == "Vehicles") pal[as.factor(ax$no_vehicle)] else
-#               pal[as.factor(ax$speed_limi)]
+    # stop spinner    
+    session$sendCustomMessage(type = "map_done", "done")
     
-      l <- leaflet(data=ax) %>% 
-        addTiles(urlTemplate="http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}") %>%
-        addTiles('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', 
-          attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>%
-        setView(lng=-3.19, lat=55.95, zoom=13) #%>%
-        #addCircleMarkers(~long, ~lat, radius=~(no_vehicle+.8)**1.5, fillOpacity=input$alpha,
-         # color=NA, popup=strs, weight=2, fillColor = fillv)
-      
-    
-      session$sendCustomMessage(type = "map_done", "done")
-      
-      l
+    l
   })
   
-#   observe({
-#     ax <- getData()
-#     alpha <- getAlpha()
-#     leafletProxy("mymap", session, data=ax) %>%
-#       addCircleMarkers(~long, ~lat, radius=~(no_vehicle+.8)**1.5, fillOpacity=alpha,
-#        color=NA, popup=strs, fillColor = "black")
-#   })
-    
   observe({
+    # modify map of changed input i.e. colour by
     ax <- getData()
     title <- input$color
     
@@ -104,32 +91,48 @@ shinyServer(function(input, output, session) {
       "Time"        = list(var="a_time_hr", type="int"),
       "Vehicles"    = list(var="no_vehicle", type="int"),
       "Speed limit" = list(var="speed_limi", type="int"),
-      list(var="speed_limi", type="int"))
-    message(col)
-    
+      list(var="none", type="none"))
+        
     col_fn <- function(col){
       if(col$type != "none"){
         if(col$type == "int") {
           return(colorNumeric("Set1", domain=ax[[col$var]]))
         } else {
           return(colorFactor("Set1", domain=ax[[col$var]]))
-        }} else return( function() "black" )
+        }} else return( function(...) "black" )
     }
     
-    leafletProxy("mymap", session, data=ax) %>%
-      clearMarkers() %>%
-      addCircleMarkers(~long, ~lat, radius=~1+(no_vehicle**2), fillOpacity=getAlpha(),
-        color=NA, popup=strs, fillColor = ~col_fn(col)(ax[[col$var]])) %>%
-      addLegend("bottomleft", pal=col_fn(col), values=ax[[col$var]], title=title)
+    if(col$var == "none"){
+      l <- leafletProxy("mymap", session, data=ax) %>%
+        addCircleMarkers(~long, ~lat, radius=~1+(no_vehicle**1.5), fillOpacity=getAlpha(),
+          color=NA, popup=~text, fillColor = "black",
+          layerId=paste0("p", 1:nrow(ax))) %>%
+        removeControl(layerId="legend")
+  
+    } else {
+      
+    l <- leafletProxy("mymap", session, data=ax) %>%
+      addCircleMarkers(~long, ~lat, radius=~1+(no_vehicle**1.5), fillOpacity=getAlpha(),
+        color=NA, popup=~text, fillColor = ~col_fn(col)(ax[[col$var]]),
+        layerId=paste0("p", 1:nrow(ax))) %>%
+      addLegend("bottomleft", pal=col_fn(col), values=ax[[col$var]], 
+        title=title, layerId="legend")
+    }
+    
+    l
   })
   
   output$monthTotals <- renderPlot({
+    d2 <- getData() %>% group_by(as.factor(ym)) %>%
+      summarise(n=n())
+    colnames(d2) <- c("ym", "n")
+    
     print(ggplot(d2, aes(x=zoo::as.Date(zoo::as.yearmon(ym)), y=n)) + 
-      geom_area() + theme_minimal() + 
-      labs(x="", y="Recorded collisions\nper month") +
-      scale_y_continuous(expand=c(0,0)))
+        geom_area() + theme_minimal() + 
+        labs(x="", y="Recorded collisions\nper month") +
+        scale_y_continuous(expand=c(0,0)))
   })
-
+  
   output$table <- DT::renderDataTable({
     DT::datatable(clean, filter = 'top', options = list(
       pageLength = 10, autoWidth = TRUE))
