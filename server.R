@@ -39,6 +39,10 @@ colnames(clean) <- c("Severity", "No. vehicles",
 
 shinyServer(function(input, output, session) {
 
+  getData <- reactive({
+    subset(accidents, a_date >= input$dates[[1]] & a_date <= input$dates[[2]])
+  })
+  
   legend <- reactive({
     proxy <- leafletProxy("mymap", session, data=accidents)
     if(input$color == "Speed limit"){
@@ -53,16 +57,17 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  
   output$mymap <- renderLeaflet({
-    fillv <- if(input$color == "None") "black" else 
-      if(input$color == "Severity") pal[as.factor(accidents$severity)] else
-        if(input$color == "Casualties") pal[as.factor(accidents$no_casualt)] else
-          if(input$color == "Time") cont_pal[accidents$a_time_hr] else
-            if(input$color == "Vehicles") pal[as.factor(accidents$no_vehicle)] else
-              pal[as.factor(accidents$speed_limi)]
+    ax <- getData()
     
-      l <- leaflet(data=subset(accidents, a_date >= input$dates[[1]] & a_date <= input$dates[[2]])) %>% 
+    fillv <- if(input$color == "None") "black" else 
+      if(input$color == "Severity") pal[as.factor(ax$severity)] else
+        if(input$color == "Casualties") pal[as.factor(ax$no_casualt)] else
+          if(input$color == "Time") cont_pal[ax$a_time_hr] else
+            if(input$color == "Vehicles") pal[as.factor(ax$no_vehicle)] else
+              pal[as.factor(ax$speed_limi)]
+    
+      l <- leaflet(data=ax) %>% 
         addTiles(urlTemplate="http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}") %>%
         addTiles('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', 
           attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>%
