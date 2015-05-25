@@ -4,7 +4,7 @@ library("shiny")
 library("leaflet")
 
 
-shinyUI(navbarPage("Blackspot", id="nav", collapsible=F,
+shinyUI(navbarPage("Blackspot", id="nav", collapsible=T,
   tabPanel("Map",
     div(class="outer",
       
@@ -19,7 +19,6 @@ shinyUI(navbarPage("Blackspot", id="nav", collapsible=F,
 var spinner = new Spinner().spin();
 $( 'div#mymap' ).append(spinner.el);"),
       
-      # Shiny versions prior to 0.11 should use class="modal" instead.
       absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
         draggable = TRUE, top = 100, left = "auto", right = 20, bottom = "auto",
         width = 360, height = "auto",
