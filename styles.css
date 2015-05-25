@@ -72,3 +72,14 @@ div.leaflet-control-zoom {
 .control-label {
   margin-top: 4px;
 }
+
+.legend {
+  background: rgba(255,255,255,1);
+}
+
+
+@media screen and (max-width: 768px) {
+     #controls {
+       display: none;
+     }
+}

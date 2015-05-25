@@ -67,7 +67,8 @@ shinyServer(function(input, output, session) {
       addTiles(urlTemplate="http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}") %>%
       addTiles('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', 
         attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>%
-      setView(lng=-3.19, lat=55.95, zoom=13) #%>%
+      setView(lng=-3.19, lat=55.95, zoom=13) %>%
+      setMaxBounds(lng1=-5, lat1=55, lng2=-2,  lat2=57)
     
     # stop spinner    
     session$sendCustomMessage(type = "map_done", "done")
@@ -106,7 +107,7 @@ shinyServer(function(input, output, session) {
         addCircleMarkers(~long, ~lat, radius=~no_vehicle+1*2, fillOpacity=getAlpha(),
           color=NA, popup=~text, fillColor = "black",
           layerId=paste0("p", 1:nrow(ax))) %>%
-        removeControl(layerId="legend")
+        removeControl(layerId="legend") 
   
     } else {
       
