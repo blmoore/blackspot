@@ -1,9 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,300,400italic,400,700);
 
-input[type="number"] {
-  max-width: 80%;
-}
-
 div.outer {
   position: fixed;
   top: 41px;
@@ -14,23 +10,21 @@ div.outer {
   padding: 0;
 }
 
-/* Customize fonts */
 body, label, input, button, select {
   font-family: 'Open Sans', sans-serif;a;
   font-weight: 300;
 }
+
 h1, h2, h3, h4 { font-weight: 400; }
 
 #controls {
-  /* Appearance */
   background-color: white;
   padding: 0 20px 20px 20px;
   cursor: move;
   /* Fade out while not hovering */
   opacity: 0.7;
-  zoom: 0.9;
   transition: opacity 500ms 1s;
-  font-size: smaller;
+  /*font-size: smaller;*/
 }
 #controls:hover {
   /* Fade in while hovering */
@@ -83,6 +77,10 @@ div.row{
   display: none;
 }
 
+p.foot {
+  font-size: .95rem;
+}
+
 @media screen and (max-width: 768px) {
      #controls {
        display: none;
@@ -90,6 +88,7 @@ div.row{
 
      div.row {
        display: block;
+       padding-top: 5px;
        background: rgba(255,255,255,.9);
        position: fixed;
        float: right;

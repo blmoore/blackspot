@@ -55,7 +55,7 @@ $( 'div#mymap' ).append(spinner.el);"),
         a("github", href="http://github.com/blmoore/blackspot"),
           "(original Shiny code adapted from",
         a("Superzip", href="https://github.com/jcheng5/superzip"), 
-          "by Joe Cheng)."),
+          "by Joe Cheng).", class="foot"),
       
       tags$script('
   Shiny.addCustomMessageHandler("map_done",
@@ -68,6 +68,7 @@ $( 'div#mymap' ).append(spinner.el);"),
       
       # mobile panel
       fluidRow(
+        # bootstrap widths should add up to 12
         column(width=4, 
           p(strong("Blackspot"), " shows vechicle collisions in",
           "the city of Edinburgh, UK. Data is made available by ",
