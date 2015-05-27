@@ -24,7 +24,7 @@ $( 'div#mymap' ).append(spinner.el);"),
         width = 360, height = "auto",
         
         h2(),
-        p(strong("Blackspot"), " shows vechicle collisions in and around",
+        p(strong("Blackspot"), " shows vechicle collisions in",
           "the city of Edinburgh, UK. Data is made available by ",
           "Edinburgh County Council via", 
           a("Edinburgh Open Data.", 
@@ -64,8 +64,22 @@ $( 'div#mymap' ).append(spinner.el);"),
           $( "div#mymap" ).remove(spinner);
         });')
         
-      )#,
+      ),
       
+      # mobile panel
+      fluidRow(
+        column(width=4, 
+          p(strong("Blackspot"), " shows vechicle collisions in",
+          "the city of Edinburgh, UK. Data is made available by ",
+          "Edinburgh County Council via", 
+          a("Edinburgh Open Data.", 
+            href="http://www.edinburghopendata.info/dataset/vehicle-collisions"))
+        ),
+        column(width=4,
+          radioButtons("color", "Colour by:", 
+            choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit"))
+        )
+      )
      # tags$div(id="cite",
       #  a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"))
     )
