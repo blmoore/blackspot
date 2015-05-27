@@ -41,8 +41,8 @@ $( 'div#mymap' ).append(spinner.el);"),
         selectInput("color", "Colour by:", 
           choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit")),
         
-        sliderInput("alpha", "Opacity:",
-          min=0, max=1, value=.4, step=.025, ticks=T),
+        sliderInput("alpha", label="Opacity:",
+          min=0, max=1, value=0.4, step=.025, ticks=T),
         
         hr(),
         h4("Summary plots"),
