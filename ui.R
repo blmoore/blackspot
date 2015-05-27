@@ -25,12 +25,11 @@ $( 'div#mymap' ).append(spinner.el);"),
         
         h2(),
         p(strong("Blackspot"), " shows vechicle collisions in",
-          "the city of Edinburgh, UK. Data is made available by ",
-          "Edinburgh County Council via", 
+          "the city of Edinburgh, UK. Data from:", 
           a("Edinburgh Open Data.", 
             href="http://www.edinburghopendata.info/dataset/vehicle-collisions")),
 
-        hr(),
+        hr(class="thin"),
         
         h4("Controls"),
         
@@ -44,11 +43,11 @@ $( 'div#mymap' ).append(spinner.el);"),
         sliderInput("alpha", label="Opacity:",
           min=0, max=1, value=0.4, step=.025, ticks=T),
         
-        hr(),
+        hr(class="thin"),
         h4("Summary plots"),
         plotOutput("monthTotals", height = "120px"),
         
-        hr(),
+        hr(class="thin"),
         p("Under active development by ", 
         a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"),
         HTML("&mdash;"), "code available on ",
@@ -69,16 +68,18 @@ $( 'div#mymap' ).append(spinner.el);"),
       # mobile panel
       div(class="mobile-panel", 
         p(strong("Blackspot"), " shows vechicle collisions in",
-          "the city of Edinburgh, UK. Datasource: ", 
+          "the city of Edinburgh, UK. Written in R Shiny by",
+          a("@benjaminlmoore,", href="https://twitter.com/benjaminlmoore"),
+          "see the code on ",
+          a("github.", href="http://github.com/blmoore/blackspot"),
+          "Data: ", 
           a("Edinburgh Open Data.", 
             href="http://www.edinburghopendata.info/dataset/vehicle-collisions")),
           
         hr(class="thin"),
           
           radioButtons("color", "Colour by:", inline=T,
-            choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit"))#,
-          #sliderInput("alpha", label="Opacity:", width="100%",
-           # min=0, max=1, value=0.4, step=.025, ticks=T)
+            choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit"))
         )
      # tags$div(id="cite",
       #  a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"))
