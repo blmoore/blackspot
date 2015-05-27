@@ -91,17 +91,20 @@ hr.thin {
        display: none;
      }
 
-     div.row {
+     div.mobile-panel {
        display: block;
-       padding-top: 5px;
-       padding-bottom: 5px;
+       padding: 5px 10px;
        background: rgba(255,255,255,.9);
        position: fixed;
-       float: right;
+       /* float: right;*/
+       left: 0;
+       right: 0;
        bottom: 0;
-       margin-left: auto;
-       margin-right: auto;
+       margin: 0 auto;
        font-size: smaller;
+       width: 100%;
+       max-width: 500px;
+       z-index: 99;
      }
 
      div.leaflet-bottom {
@@ -117,5 +120,13 @@ hr.thin {
 
      div.radio{
        font-size: smaller;
+     }
+
+     /* compact pop-ups on mobile */
+     div.leaflet-popup-content {
+       width: 140px !important;
+       font-size: smaller;
+       margin: 5px;
+       padding: 0px;
      }
 }

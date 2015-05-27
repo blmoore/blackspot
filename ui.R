@@ -67,10 +67,8 @@ $( 'div#mymap' ).append(spinner.el);"),
       ),
       
       # mobile panel
-      fluidRow(
-        # bootstrap widths should add up to 12
-        column(width=12, 
-          p(strong("Blackspot"), " shows vechicle collisions in",
+      div(class="mobile-panel", 
+        p(strong("Blackspot"), " shows vechicle collisions in",
           "the city of Edinburgh, UK. Datasource: ", 
           a("Edinburgh Open Data.", 
             href="http://www.edinburghopendata.info/dataset/vehicle-collisions")),
@@ -78,11 +76,10 @@ $( 'div#mymap' ).append(spinner.el);"),
         hr(class="thin"),
           
           radioButtons("color", "Colour by:", inline=T,
-            choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit")),
-          sliderInput("alpha", label="Opacity:", width="100%",
-            min=0, max=1, value=0.4, step=.025, ticks=T)
+            choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit"))#,
+          #sliderInput("alpha", label="Opacity:", width="100%",
+           # min=0, max=1, value=0.4, step=.025, ticks=T)
         )
-      )
      # tags$div(id="cite",
       #  a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"))
     )
