@@ -24,13 +24,12 @@ $( 'div#mymap' ).append(spinner.el);"),
         width = 360, height = "auto",
         
         h2(),
-        p(strong("Blackspot"), " shows vechicle collisions in and around",
-          "the city of Edinburgh, UK. Data is made available by ",
-          "Edinburgh County Council via", 
+        p(strong("Blackspot"), " shows vechicle collisions in",
+          "the city of Edinburgh, UK. Data from:", 
           a("Edinburgh Open Data.", 
             href="http://www.edinburghopendata.info/dataset/vehicle-collisions")),
 
-        hr(),
+        hr(class="thin"),
         
         h4("Controls"),
         
@@ -44,18 +43,18 @@ $( 'div#mymap' ).append(spinner.el);"),
         sliderInput("alpha", label="Opacity:",
           min=0, max=1, value=0.4, step=.025, ticks=T),
         
-        hr(),
+        hr(class="thin"),
         h4("Summary plots"),
         plotOutput("monthTotals", height = "120px"),
         
-        hr(),
+        hr(class="thin"),
         p("Under active development by ", 
         a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"),
         HTML("&mdash;"), "code available on ",
         a("github", href="http://github.com/blmoore/blackspot"),
           "(original Shiny code adapted from",
         a("Superzip", href="https://github.com/jcheng5/superzip"), 
-          "by Joe Cheng)."),
+          "by Joe Cheng).", class="foot"),
       
       tags$script('
   Shiny.addCustomMessageHandler("map_done",
@@ -64,8 +63,24 @@ $( 'div#mymap' ).append(spinner.el);"),
           $( "div#mymap" ).remove(spinner);
         });')
         
-      )#,
+      ),
       
+      # mobile panel
+      div(class="mobile-panel", 
+        p(strong("Blackspot"), " shows vechicle collisions in",
+          "the city of Edinburgh, UK. Written in R Shiny by",
+          a("@benjaminlmoore,", href="https://twitter.com/benjaminlmoore"),
+          "see the code on ",
+          a("github.", href="http://github.com/blmoore/blackspot"),
+          "Data: ", 
+          a("Edinburgh Open Data.", 
+            href="http://www.edinburghopendata.info/dataset/vehicle-collisions")),
+          
+        hr(class="thin"),
+          
+          radioButtons("color_mob", "Colour by:", inline=T,
+            choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit"))
+        )
      # tags$div(id="cite",
       #  a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"))
     )

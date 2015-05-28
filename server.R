@@ -80,6 +80,8 @@ shinyServer(function(input, output, session) {
     # modify map of changed input i.e. colour by
     ax <- getData()
     title <- input$color
+
+    updateRadioButtons(session, "color_mob", selected=input$color)
     
     col <- switch(input$color,
       "Severity"    = list(var="severity", type="factor"),
@@ -121,6 +123,12 @@ shinyServer(function(input, output, session) {
     
     l
   })
+  
+  # -- Map mobile controls back to main panel -- #
+  observe({
+    updateSelectInput(session, "color", selected=input$color_mob)
+  })
+  
   
   output$monthTotals <- renderPlot({
     d2 <- getData() %>% group_by(as.factor(ym)) %>%

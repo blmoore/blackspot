@@ -19,11 +19,12 @@ h1, h2, h3, h4 { font-weight: 400; }
 
 #controls {
   background-color: white;
-  padding: 0 20px 20px 20px;
+  padding: 0 20px 0px 20px;
   cursor: move;
   /* Fade out while not hovering */
   opacity: 0.7;
   transition: opacity 500ms 1s;
+  /*font-size: smaller;*/
 }
 #controls:hover {
   /* Fade in while hovering */
@@ -71,9 +72,61 @@ div.leaflet-control-zoom {
   background: rgba(255,255,255,1);
 }
 
+/* mobile controls */
+div.row{
+  display: none;
+}
+
+p.foot {
+  font-size: .95rem;
+}
+
+hr.thin {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
 
 @media screen and (max-width: 768px) {
      #controls {
        display: none;
+     }
+
+     div.mobile-panel {
+       display: block;
+       padding: 5px 10px;
+       background: rgba(255,255,255,.9);
+       position: fixed;
+       /* float: right;*/
+       left: 0;
+       right: 0;
+       bottom: 0;
+       margin: 0 auto 5px auto;
+       font-size: smaller;
+       width: 100%;
+       max-width: 500px;
+       z-index: 99;
+     }
+
+     div.leaflet-bottom {
+       top: 15px;
+       right: 5px;
+       bottom: auto;
+       left: auto;
+     }
+
+     div.leaflet-control-attribution {
+       display: none;
+     }
+
+     div.radio{
+       font-size: smaller;
+     }
+
+     /* compact pop-ups on mobile */
+     div.leaflet-popup-content {
+       width: 140px !important;
+       font-size: smaller;
+       margin: 5px;
+       padding: 0px;
      }
 }
