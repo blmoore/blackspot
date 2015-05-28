@@ -78,7 +78,7 @@ $( 'div#mymap' ).append(spinner.el);"),
           
         hr(class="thin"),
           
-          radioButtons("color", "Colour by:", inline=T,
+          radioButtons("color_mob", "Colour by:", inline=T,
             choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit"))
         )
      # tags$div(id="cite",
