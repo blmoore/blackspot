@@ -120,8 +120,6 @@ shinyServer(function(input, output, session) {
       addLegend("bottomleft", pal=col_fn(col), values=ax[[col$var]], 
         title=title, layerId="legend")
     }
-    
-    l
   })
   
   # -- Map mobile controls back to main panel -- #
