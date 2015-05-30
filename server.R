@@ -45,6 +45,10 @@ shinyServer(function(input, output, session) {
     input$alpha
   })
   
+#   getZoom <- reactive({
+#     input$mymap_zoom
+#   })
+  
   legend <- reactive({
     proxy <- leafletProxy("mymap", session, data=accidents)
     if(input$color == "Speed limit"){
@@ -64,9 +68,11 @@ shinyServer(function(input, output, session) {
     ax <- getData()
         
     l <- leaflet(data=ax) %>% 
-      addTiles(urlTemplate="http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}") %>%
+      addTiles(urlTemplate="http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}",
+        options=tileOptions(minZoom=10, maxZoom=17)) %>%
       addTiles('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', 
-        attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>') %>%
+        attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+       options=tileOptions(minZoom=10, maxZoom=17)) %>%
       setView(lng=-3.19, lat=55.95, zoom=13) %>%
       setMaxBounds(lng1=-5, lat1=55, lng2=-2,  lat2=57)
     
@@ -104,9 +110,15 @@ shinyServer(function(input, output, session) {
         }} else return( function(...) "black" )
     }
     
+    # TODO ::
+    # as zoom increases, point sizes decrease,
+    # instead, increase points with zoom size
+    # zoom <- getZoom()
+    # message(zoom)
+    
     if(col$var == "none"){
       l <- leafletProxy("mymap", session, data=ax) %>%
-        addCircleMarkers(~long, ~lat, radius=~no_vehicle+1*2, fillOpacity=getAlpha(),
+        addCircleMarkers(~long, ~lat, radius=~1+(no_vehicle**1.5), fillOpacity=getAlpha(),
           color=NA, popup=~text, fillColor = "black",
           layerId=paste0("p", 1:nrow(ax))) %>%
         removeControl(layerId="legend") 
