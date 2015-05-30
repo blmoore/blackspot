@@ -11,7 +11,7 @@ Note `analytics.js` contains my Google analytics tracking code, you'll want to c
 
 ## Screenshot
 
-![screenshot of shiny app](http://blm.io/blackspot_screen.png)
+![screenshot of shiny app](http://blm.io/images/blackspot_screen.png)
 
 ## Credits
 
