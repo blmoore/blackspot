@@ -26,10 +26,12 @@ $( 'div#mymap' ).append(spinner.el);"),
         width = 360, height = "auto",
         
         h2(),
-        p(strong("Blackspot"), " shows vechicle collisions in",
-          "the city of Edinburgh, UK. Data from:", 
+        p(class="intro",
+          strong("Blackspot"), " shows vechicle collisions in",
+          "the city of Edinburgh, UK. Data from", 
           a("Edinburgh Open Data.", 
-            href="http://www.edinburghopendata.info/dataset/vehicle-collisions")),
+            href="http://www.edinburghopendata.info/dataset/vehicle-collisions",
+            target="_blank")),
         
         tabsetPanel(
           tabPanel("Controls",
@@ -51,18 +53,19 @@ $( 'div#mymap' ).append(spinner.el);"),
               ),
               
               column(6, 
-                # div(style="display:inline-block; height: 150px;", 
                 selectInput("scale", label="Scale by:", width=120, 
-                  choices=c("None", "Severity", "Casualties", "Time", 
-                    "Vehicles", "Speed limit"))#)
+                  selected="Vehicles",
+                  choices=c("Casualties", "Vehicles"))#)
               )
             ),
             
-            hr(),
+            hr(class="thin"),
             p("Under development by",
-              a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"),
+              a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore",
+                target="_blank"),
               HTML("&bull;"), "See the code on ", 
-              a("github", href="http://github.com/blmoore/blackspot"),
+              a("github", href="http://github.com/blmoore/blackspot",
+                target="_blank"),
               class="foot")
           ),
           
@@ -71,15 +74,32 @@ $( 'div#mymap' ).append(spinner.el);"),
             plotOutput("monthTotals", height = "120px")
           ),
           tabPanel("About",
-            
-            hr(class="thin"),
-            p("Under active development by ", 
-              a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"),
-              HTML("&mdash;"), "code available on ",
-              a("github", href="http://github.com/blmoore/blackspot"),
-              "(original Shiny code adapted from",
-              a("Superzip", href="https://github.com/jcheng5/superzip"), 
-              "by Joe Cheng).", class="foot")
+            p("Explore vehicle collisions recorded in Edinburgh",
+              "between 2010 and 2013 in this interactive data visualisation."
+              ),
+            p("Blackspot is written in ", 
+              a("Shiny,", href="http://shiny.rstudio.com/", target="_blank"),
+              "a web application framework for the R language.",
+              "Maps are built with ",
+              a("leaflet.js", href="http://leafletjs.com/", target="_blank"),
+              "via the",
+              a("R language bindings,", href="https://rstudio.github.io/leaflet/",
+                target="_blank"),
+              "and using map data from",
+              a("Open Street Map.", href="http://www.openstreetmap.org/copyright",
+                target="_blank")
+              ),
+            p("Project under development by ",
+              a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore",
+                target="_blank"),
+              HTML("&mdash;"),
+              "see the full code on ", 
+              a("github", href="http://github.com/blmoore/blackspot",
+                target="_blank"),
+              "or run locally with:"
+            ),
+            pre("shiny::runGitHub('blmoore/blackspot')"),
+            hr(class="thin")
           ) 
           # end about panel
         ),

@@ -34,6 +34,16 @@ colnames(clean) <- c("Severity", "No. vehicles",
   "Light conditions", "Weather conditions", 
   "Road conditions", "Special conditions", "Postcode")
 
+map_choice <- function(inp){
+  switch(inp,
+    "Severity"    = list(var="severity", type="factor"),
+    "Casualties"  = list(var="no_casualt", type="int"),
+    "Time"        = list(var="a_time_hr", type="int"),
+    "Vehicles"    = list(var="no_vehicle", type="int"),
+    "Speed limit" = list(var="speed_limi", type="int"),
+    list(var="none", type="none"))
+}
+
 shinyServer(function(input, output, session) {
   
   getData <- reactive({
@@ -89,13 +99,8 @@ shinyServer(function(input, output, session) {
 
     updateRadioButtons(session, "color_mob", selected=input$color)
     
-    col <- switch(input$color,
-      "Severity"    = list(var="severity", type="factor"),
-      "Casualties"  = list(var="no_casualt", type="int"),
-      "Time"        = list(var="a_time_hr", type="int"),
-      "Vehicles"    = list(var="no_vehicle", type="int"),
-      "Speed limit" = list(var="speed_limi", type="int"),
-      list(var="none", type="none"))
+    col <- map_choice(input$color)
+    scale <- map_choice(input$scale)
         
     pal <- c("#A52278", "#993086", "#8C3C97", 
       "#6D328A", "#4E2B81", "#3B264B", "#180B11", "#000000")
@@ -118,7 +123,9 @@ shinyServer(function(input, output, session) {
     
     if(col$var == "none"){
       l <- leafletProxy("mymap", session, data=ax) %>%
-        addCircleMarkers(~long, ~lat, radius=~1+(no_vehicle**1.5), fillOpacity=getAlpha(),
+        addCircleMarkers(~long, ~lat, 
+          radius=~input$base+(eval(parse(text=scale$var))**1.5), 
+          fillOpacity=getAlpha(),
           color=NA, popup=~text, fillColor = "black",
           layerId=paste0("p", 1:nrow(ax))) %>%
         removeControl(layerId="legend") 
@@ -126,7 +133,9 @@ shinyServer(function(input, output, session) {
     } else {
       
     l <- leafletProxy("mymap", session, data=ax) %>%
-      addCircleMarkers(~long, ~lat, radius=~1+(no_vehicle**1.5), fillOpacity=getAlpha(),
+      addCircleMarkers(~long, ~lat, 
+        radius=~input$base+(eval(parse(text=scale$var))**1.5), 
+        fillOpacity=getAlpha(),
         color=NA, popup=~text, fillColor = ~col_fn(col)(ax[[col$var]]),
         layerId=paste0("p", 1:nrow(ax))) %>%
       addLegend("bottomleft", pal=col_fn(col), values=ax[[col$var]], 

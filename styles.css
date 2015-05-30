@@ -155,3 +155,7 @@ label.control-label[for=scale]{
 .nav-tabs{
   margin-bottom: 5px;
 }
+
+p.intro{
+  margin-bottom: 15px;
+}
