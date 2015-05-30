@@ -72,18 +72,18 @@ div.leaflet-control-zoom {
   background: rgba(255,255,255,1);
 }
 
-/* mobile controls */
-div.row{
-  display: none;
-}
-
 p.foot {
   font-size: .95rem;
+  text-align: center;
 }
 
 hr.thin {
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.row{
+  margin: 0 auto;
 }
 
 @media screen and (max-width: 768px) {
@@ -129,4 +129,29 @@ hr.thin {
        margin: 5px;
        padding: 0px;
      }
+}
+
+#base {
+  max-width: 100px;
+}
+
+/* slider tweaks */
+.irs-single{
+  background: rgba(0, 0, 0, 0.5);
+}
+.irs-single::after{
+  border-top-color: rgba(0, 0, 0, 0.5);
+}
+
+/* spacing tweaks for lower controls */
+label.control-label[for=base]{
+  margin-bottom: 1px !important;
+}
+
+label.control-label[for=scale]{
+  margin-bottom: 10px;
+}
+
+.nav-tabs{
+  margin-bottom: 5px;
 }

@@ -9,9 +9,11 @@ shinyUI(navbarPage("Blackspot", id="nav", collapsible=T,
     div(class="outer",
       
       tags$head(
-          includeScript("analytics.js"),
-          includeCSS("styles.css"),
-          includeScript("spin.min.js")
+        includeScript("analytics.js"),
+        tags$link(rel = "stylesheet", type = "text/css",
+          href = "ion.rangeSlider.skinFlat.css"),
+        includeScript("spin.min.js"),
+        includeCSS("styles.css")
       ),
       
       leafletOutput("mymap", width="100%", height="100%"),
@@ -28,35 +30,61 @@ $( 'div#mymap' ).append(spinner.el);"),
           "the city of Edinburgh, UK. Data from:", 
           a("Edinburgh Open Data.", 
             href="http://www.edinburghopendata.info/dataset/vehicle-collisions")),
-
-        hr(class="thin"),
         
-        h4("Controls"),
+        tabsetPanel(
+          tabPanel("Controls",
+                      
+            dateRangeInput('dates',
+              label = 'Occurred between:',
+              start = as.Date("2010-01-01"), end = as.Date("2013-07-01")),
+            
+            selectInput("color", "Colour by:", 
+              choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit")),
+            
+            sliderInput("alpha", label="Opacity:",
+              min=0, max=1, value=0.4, step=.025, ticks=T),
+            
+            fluidRow(
+              column(6,
+                sliderInput("base", label="Point size:",
+                  min=1, max=5, value=1)
+              ),
+              
+              column(6, 
+                # div(style="display:inline-block; height: 150px;", 
+                selectInput("scale", label="Scale by:", width=120, 
+                  choices=c("None", "Severity", "Casualties", "Time", 
+                    "Vehicles", "Speed limit"))#)
+              )
+            ),
+            
+            hr(),
+            p("Under development by",
+              a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"),
+              HTML("&bull;"), "See the code on ", 
+              a("github", href="http://github.com/blmoore/blackspot"),
+              class="foot")
+          ),
+          
+          tabPanel("Graphs",
+            #h4("Summary plots"),
+            plotOutput("monthTotals", height = "120px")
+          ),
+          tabPanel("About",
+            
+            hr(class="thin"),
+            p("Under active development by ", 
+              a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"),
+              HTML("&mdash;"), "code available on ",
+              a("github", href="http://github.com/blmoore/blackspot"),
+              "(original Shiny code adapted from",
+              a("Superzip", href="https://github.com/jcheng5/superzip"), 
+              "by Joe Cheng).", class="foot")
+          ) 
+          # end about panel
+        ),
         
-        dateRangeInput('dates',
-          label = 'Occurred between:',
-          start = as.Date("2010-01-01"), end = as.Date("2013-07-01")),
-        
-        selectInput("color", "Colour by:", 
-          choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit")),
-        
-        sliderInput("alpha", label="Opacity:",
-          min=0, max=1, value=0.4, step=.025, ticks=T),
-        
-        hr(class="thin"),
-        h4("Summary plots"),
-        plotOutput("monthTotals", height = "120px"),
-        
-        hr(class="thin"),
-        p("Under active development by ", 
-        a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"),
-        HTML("&mdash;"), "code available on ",
-        a("github", href="http://github.com/blmoore/blackspot"),
-          "(original Shiny code adapted from",
-        a("Superzip", href="https://github.com/jcheng5/superzip"), 
-          "by Joe Cheng).", class="foot"),
-      
-      tags$script('
+        tags$script('
   Shiny.addCustomMessageHandler("map_done",
         function(s) {
           spinner.stop();
@@ -75,13 +103,13 @@ $( 'div#mymap' ).append(spinner.el);"),
           "Data: ", 
           a("Edinburgh Open Data.", 
             href="http://www.edinburghopendata.info/dataset/vehicle-collisions")),
-          
+        
         hr(class="thin"),
-          
-          radioButtons("color_mob", "Colour by:", inline=T,
-            choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit"))
-        )
-     # tags$div(id="cite",
+        
+        radioButtons("color_mob", "Colour by:", inline=T,
+          choices=c("None", "Severity", "Casualties", "Time", "Vehicles", "Speed limit"))
+      )
+      # tags$div(id="cite",
       #  a("@benjaminlmoore", href="http://twitter.com/benjaminlmoore"))
     )
   ), tabPanel("Table", DT::dataTableOutput("table"))
