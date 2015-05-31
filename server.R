@@ -44,6 +44,11 @@ map_choice <- function(inp){
     list(var="none", type="none"))
 }
 
+monthly <- accidents %>% group_by(a_date_yr, a_date_mon) %>% tally()
+monthly$a_date_mon <- factor(monthly$a_date_mon, levels=month.name, ordered=T)
+monthly$a_date_yr <- factor(paste0("20",monthly$a_date_yr), levels=2013:2010)
+
+
 shinyServer(function(input, output, session) {
   
   getData <- reactive({
@@ -161,10 +166,6 @@ shinyServer(function(input, output, session) {
   })
   
   output$month_waffle <- renderPlot({
-    monthly <- ax %>% group_by(a_date_yr, a_date_mon) %>% tally()
-    monthly$a_date_mon <- factor(monthly$a_date_mon, levels=month.name, ordered=T)
-    monthly$a_date_yr <- factor(paste0("20",monthly$a_date_yr), levels=2013:2010)
-    
     print(ggplot(monthly, aes(x=a_date_mon, y=a_date_yr, fill=n)) +
       geom_tile(col="white") + scale_fill_continuous(low="grey80", high="grey10") +
       theme_minimal() + scale_x_discrete(expand=c(0,0), 
