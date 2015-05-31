@@ -70,8 +70,11 @@ $( 'div#mymap' ).append(spinner.el);"),
           ),
           
           tabPanel("Graphs",
-            #h4("Summary plots"),
-            plotOutput("monthTotals", height = "120px")
+            p("Plots showing summary statistics."),
+            plotOutput("monthTotals", height = "110px"),
+            #hr(),
+            plotOutput("involving", height = "120px", width="100%"),
+            hr(class="thin")
           ),
           tabPanel("About",
             p("Explore vehicle collisions recorded in Edinburgh",

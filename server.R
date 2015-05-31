@@ -156,8 +156,25 @@ shinyServer(function(input, output, session) {
     
     print(ggplot(d2, aes(x=zoo::as.Date(zoo::as.yearmon(ym)), y=n)) + 
         geom_area() + theme_minimal() + 
-        labs(x="", y="Recorded collisions\nper month") +
+        labs(x=NULL, y="Incidents\nper month") +
         scale_y_continuous(expand=c(0,0)))
+  })
+  
+  output$involving <- renderPlot({
+    types <- getData() %>% group_by(acc_type) %>% tally()
+    
+    types$lab <- factor(with(types, ifelse(acc_type == "M.V.N.P.", "Multiple vehicles",
+      ifelse(acc_type == "S.V.N.P.", "Single vehicle",
+        ifelse(acc_type == "T.V.N.P.", "Two vehicles", as.character(acc_type))))))
+    
+    types$lab <- factor(types$lab, levels=levels(types$lab)[c(5:6, 3, 1:2, 4)])
+    
+    print(ggplot(types, aes(x=lab, y=n/sum(n))) +
+        geom_bar(stat="identity", position=position_stack()) +
+        theme_minimal() + labs(y="Percent collisions involved", x=NULL) +
+        scale_y_continuous(expand=c(0,0), labels=scales::percent) +
+        theme(axis.text.y=element_text(hjust=1)) + #, colour = "white")) +
+        coord_flip())
   })
   
   output$table <- DT::renderDataTable({

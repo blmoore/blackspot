@@ -159,3 +159,7 @@ label.control-label[for=scale]{
 p.intro{
   margin-bottom: 15px;
 }
+
+div#monthTotals img {
+  margin-left: 13px;
+}
