@@ -3,8 +3,8 @@ library("DT")
 library("ggplot2")
 library("htmltools")
 library("leaflet")
+#library("rcharts")
 library("shiny")
-library("zoo")
 
 accidents <- readRDS("data/accidents.rds")
 #accidents <- accidents[sample(1:nrow(accidents), 3000),]
@@ -160,6 +160,23 @@ shinyServer(function(input, output, session) {
         scale_y_continuous(expand=c(0,0)))
   })
   
+  output$month_waffle <- renderPlot({
+    monthly <- ax %>% group_by(a_date_yr, a_date_mon) %>% tally()
+    monthly$a_date_mon <- factor(monthly$a_date_mon, levels=month.name, ordered=T)
+    monthly$a_date_yr <- factor(paste0("20",monthly$a_date_yr), levels=2013:2010)
+    
+    print(ggplot(monthly, aes(x=a_date_mon, y=a_date_yr, fill=n)) +
+      geom_tile(col="white") + scale_fill_continuous(low="grey80", high="grey10") +
+      theme_minimal() + scale_x_discrete(expand=c(0,0), 
+        labels=substr(month.abb, 1, 1)) +
+      labs(x=NULL, y=NULL, fill="Incidents") +
+      theme(axis.ticks.x=element_blank(),
+        axis.ticks.y=element_blank(),
+        axis.text.y=element_text(hjust=0),
+        axis.text.x=element_text(vjust=0)))
+  })
+  
+  
   output$involving <- renderPlot({
     types <- getData() %>% group_by(acc_type) %>% tally()
     
@@ -176,6 +193,8 @@ shinyServer(function(input, output, session) {
         theme(axis.text.y=element_text(hjust=1)) + #, colour = "white")) +
         coord_flip())
   })
+  
+  
   
   output$table <- DT::renderDataTable({
     action <- dataTableAjax(session, clean)

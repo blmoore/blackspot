@@ -160,6 +160,16 @@ p.intro{
   margin-bottom: 15px;
 }
 
+p.topp {
+  margin-top: 10px;
+}
+
+/* static plot positioning tweaks */
+
 div#monthTotals img {
-  margin-left: 13px;
+  margin-left: 2px;
+}
+
+div#month_waffle img {
+  margin-left: 10px;
 }

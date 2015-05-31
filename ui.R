@@ -70,14 +70,15 @@ $( 'div#mymap' ).append(spinner.el);"),
           ),
           
           tabPanel("Graphs",
-            p("Plots showing summary statistics."),
+            #p("Static plots"),
             plotOutput("monthTotals", height = "110px"),
+            plotOutput("month_waffle", height = "120px"),
             #hr(),
             plotOutput("involving", height = "120px", width="100%"),
             hr(class="thin")
           ),
           tabPanel("About",
-            p("Explore vehicle collisions recorded in Edinburgh",
+            p(class="topp", "Explore vehicle collisions recorded in Edinburgh",
               "between 2010 and 2013 in this interactive data visualisation."
               ),
             p("Blackspot is written in ", 
