@@ -44,10 +44,19 @@ map_choice <- function(inp){
     list(var="none", type="none"))
 }
 
+legend_hdr <- function(inp){
+  switch(inp,
+    "Severity"    = "Severity",
+    "Casualties"  = "Number of casualties",
+    "Time"        = "Time (24h)",
+    "Vehicles"    = "Number of vehicles",
+    "Speed limit" = "Speed limit (mph)",
+    "")
+}
+
 monthly <- accidents %>% group_by(a_date_yr, a_date_mon) %>% tally()
 monthly$a_date_mon <- factor(monthly$a_date_mon, levels=month.name, ordered=T)
 monthly$a_date_yr <- factor(paste0("20",monthly$a_date_yr), levels=2013:2010)
-
 
 shinyServer(function(input, output, session) {
   
@@ -100,7 +109,7 @@ shinyServer(function(input, output, session) {
   observe({
     # modify map of changed input i.e. colour by
     ax <- getData()
-    title <- input$color
+    title <- legend_hdr(input$color)
 
     updateRadioButtons(session, "color_mob", selected=input$color)
     
