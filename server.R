@@ -92,11 +92,7 @@ shinyServer(function(input, output, session) {
     ax <- getData()
         
     l <- leaflet(data=ax) %>% 
-      addTiles(urlTemplate="http://openmapsurfer.uni-hd.de/tiles/roadsg/x={x}&y={y}&z={z}",
-        options=tileOptions(minZoom=10, maxZoom=17)) %>%
-      addTiles('http://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', 
-        attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-       options=tileOptions(minZoom=10, maxZoom=17)) %>%
+      addProviderTiles("CartoDB.Positron", tileOptions(minZoom=10, maxZoom=17))  %>%
       setView(lng=-3.19, lat=55.95, zoom=13) %>%
       setMaxBounds(lng1=-5, lat1=55, lng2=-2,  lat2=57)
     
