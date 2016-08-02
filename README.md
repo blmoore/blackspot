@@ -5,6 +5,12 @@ Shiny app exploring Edinburgh traffic collision data. View at [blackspot.org.uk]
 shiny::runGitHub("blmoore/blackspot")
 ```
 
+Alternatively, use docker (view at localhost:3838):
+
+```
+docker run -p 3838:3838 blmoore/blackspot
+```
+
 Note `analytics.js` contains my Google analytics tracking code, you'll want to comment this out (i.e. `includeScript("analytics.js")` in `ui.R`) or swap in your own code if you're deploying this app!
 
 ## Screenshots
