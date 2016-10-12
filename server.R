@@ -204,7 +204,7 @@ shinyServer(function(input, output, session) {
   
   output$table <- DT::renderDataTable({
     action <- dataTableAjax(session, clean)
-    DT::datatable(clean, filter = 'top', server=T, options = list(
+    DT::datatable(clean, filter = 'top', options = list(
       pageLength = 10, autoWidth = TRUE, ajax=list(url=action)))
   })
   
